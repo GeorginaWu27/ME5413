@@ -1,0 +1,19 @@
+use_sim_time: true
+
+odom_frame: odom
+map_frame: map
+base_frame: base_link
+scan_topic: /front/scan
+
+mode: mapping
+debug_logging: false
+throttle_scans: 1
+transform_publish_period: 0.01
+map_update_interval: 0.2
+resolution: 0.03
+max_laser_range: 30.0
+minimum_time_interval: 0.1
+transform_timeout: 0.05
+tf_buffer_duration: 30.0
+stack_size_to_use: 40000000
+enable_interactive_mode: false

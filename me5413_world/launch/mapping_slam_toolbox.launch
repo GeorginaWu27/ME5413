@@ -1,0 +1,80 @@
+<launch>
+  <!-- 键盘控制 -->
+  <node name="teleop_twist_keyboard"
+        pkg="teleop_twist_keyboard"
+        type="teleop_twist_keyboard.py"
+        output="screen"
+        launch-prefix="xterm -e" />
+
+  <!-- EKF 融合 odom + imu -->
+  <include file="$(find me5413_world)/launch/ekf.launch"/>
+
+  <!-- SLAM Toolbox -->
+  <node pkg="slam_toolbox"
+        type="sync_slam_toolbox_node"
+        name="slam_toolbox"
+        output="log">
+    <rosparam command="load" file="$(find me5413_world)/config/slam_toolbox.yaml"/>
+  </node>
+
+  <!-- Perception -->
+  <node pkg="me5413_world"
+        type="box_counter_perception.py"
+        name="box_counter_perception"
+        output="screen">
+
+    <param name="rate" value="10" />
+
+    <param name="image_topic" value="/front/image_raw" />
+    <param name="camera_info_topic" value="/front/camera_info" />
+    <param name="scan_topic" value="/front/scan" />
+    <param name="odom_topic" value="/final_slam/odom" />
+
+    <!-- 必须与 /front/scan 的 header.frame_id 一致；当前应为 front_laser -->
+    <param name="lidar_frame" value="front_laser" />
+    <param name="map_frame" value="map" />
+
+    <param name="use_gpu" value="true" />
+
+    <param name="ocr_conf_thresh" value="0.90" />
+    <param name="min_diag_len" value="45.0" />
+    <param name="max_text_len" value="1" />
+
+    <param name="required_stable_hits" value="3" />
+    <param name="same_obs_time_window" value="1.0" />
+
+    <param name="front_range_min" value="0.15" />
+    <param name="front_range_max" value="8.0" />
+    <param name="search_half_window" value="2" />
+    <param name="range_offset" value="0.0" />
+
+    <param name="dedup_radius" value="0.60" />
+
+    <!-- 如果你只想统计第一层，就打开 floor filter -->
+    <param name="use_floor_filter" value="false" />
+    <param name="floor_x_min" value="7.0" />
+    <param name="floor_x_max" value="17.0" />
+    <param name="floor_y_min" value="-7.2" />
+    <param name="floor_y_max" value="2.0" />
+
+    <param name="use_center_roi" value="false" />
+    <param name="center_roi_w_ratio" value="0.8" />
+    <param name="center_roi_h_ratio" value="0.8" />
+
+    <param name="debug_view" value="true" />
+    <param name="debug_image_topic" value="/percep/debug_image" />
+
+    <param name="output_yaml"
+           value="$(find me5413_world)/records/box_counts.yaml" />
+    <param name="records_topic" value="/percep/numbers" />
+    <param name="target_pose_topic" value="/percep/pose" />
+  </node>
+
+  <!-- RViz -->
+  <node type="rviz"
+        name="rviz"
+        pkg="rviz"
+        args="-d $(find me5413_world)/rviz/debug_img.rviz"
+        output="log"
+        respawn="true"/>
+</launch>

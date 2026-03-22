@@ -1,0 +1,7 @@
+image: /home/gw/5413/ME5413_Final_Project/src/me5413_world/maps/floor1.pgm
+resolution: 0.050000
+origin: [-2.498493, -5.663929, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

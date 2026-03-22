@@ -1,0 +1,9 @@
+<launch>
+  <node pkg="robot_localization"
+        type="ekf_localization_node"
+        name="ekf_localization_node"
+        output="log"
+        clear_params="true">
+    <rosparam command="load" file="$(find me5413_world)/config/ekf.yaml"/>
+  </node>
+</launch>
